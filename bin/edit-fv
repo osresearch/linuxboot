@@ -1,0 +1,55 @@
+#!/usr/bin/perl
+# Replace fixed location files with pad files
+# This is useful for turning off parts of PEI that we do not want to use
+use warnings;
+use strict;
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+use Getopt::Long;
+use EFI;
+
+my $usage = <<"END";
+Usage:
+    $0 < input.fv > output.fv address [...]
+END
+
+local $/;
+my $fv = <STDIN>;
+my $fv_len = length($fv);
+
+for my $offset (map { hex $_ } @ARGV)
+{
+	die sprintf "0x%08x > FV length %x", $offset, $fv_len
+		if $offset + 0x20 > $fv_len;
+
+	my $len = EFI::read24($fv, $offset + 0x14);
+
+	if ($len == 0xFFFFFF)
+	{
+		# Version 2 header with extended length
+		$len = EFI::read64($fv, $offset + 0x18);
+
+		# If we have an all-0xFF length, which indicates
+		# the start of free space
+		if ($len == ~0)
+		{
+			warn sprintf "0x%08x is empty space\n", $offset;
+			next;
+		}
+	}
+
+	die sprintf "0x%08x file has zero length?\n", $offset
+		if $len == 0x0;
+
+	die sprintf "0x%08x file len 0x%x > FV len %x\n",
+		$offset,
+		$len,
+		$fv_len,
+		if $len + $offset > $fv_len;
+
+	substr($fv, $offset, $len) = EFI::ffs_pad($len);
+}
+
+
+print $fv;
+
