@@ -50,6 +50,7 @@ my $fv_block_size = 0x1000; # force alignment of files to this spacing
 our %file_types = qw/
 	RAW                   0x01
 	FREEFORM              0x02
+	FREEFORM_GUID         0x02
 	SECURITY_CORE         0x03
 	PEI_CORE              0x04
 	DXE_CORE              0x05
@@ -88,6 +89,7 @@ our %section_types = qw/
 # Some special cases for non-PE32 sections
 our %section_type_map = qw/
 	FREEFORM		RAW
+	FREEFORM_GUID		FREEFORM_SUBTYPE_GUID
 	FIRMWARE_VOLUME_IMAGE	FIRMWARE_VOLUME_IMAGE
 /;
 
