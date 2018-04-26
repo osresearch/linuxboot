@@ -88,3 +88,4 @@ boards/*/volume-*
 *.raw
 *.pad
 *.hop
+.*
