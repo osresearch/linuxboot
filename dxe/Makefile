@@ -36,7 +36,7 @@ FORCE:
 		$^ \
 		$@
 	# fixup the PE32 characteristic field to make DxeCore happy
-	printf '\x2E\x00' | dd of=$@ conv=notrunc bs=1 seek=150 status=none
+	/usr/bin/printf '\x2E\x00' | dd of=$@ conv=notrunc bs=1 seek=150 status=none
 
 %.ffs: %.efi
 	../bin/create-ffs \
