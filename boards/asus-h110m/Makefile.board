@@ -1,0 +1,50 @@
+#
+# Specific targets and things for the Asus H110M
+#
+# This is responsible for extracting the DXE section from the ROM,
+# extracting each of the images from it, and setting the sizes for
+# the different firmware images.
+#
+
+# DXE volume is uncompressed for now
+#dxe-compress	:= 0xFF0000
+dxe-size	:= 0x8D0000
+
+
+dxe-path := $(BUILD)/rom/0x00330000
+
+dxe-files := $(shell awk  \
+	'/^[0-9A-Fa-f]/ {print "$(dxe-path)/"$$1".ffs"}' \
+	boards/$(BOARD)/image-files.txt \
+)
+
+
+# The Intel firmware has lots of small pieces.
+# We replace the DXE recovery image and one of the other
+# images with the LinuxBoot one.  Potentially we
+# can clean up more space.
+FVS := 
+FVS += $(BUILD)/rom/0x00000000.ifd # Intel Flash Descriptor
+FVS += $(BUILD)/rom/0x00010000.bin # ME section
+FVS += $(BUILD)/rom/0x00280000.fv # NVRAM
+FVS += $(BUILD)/rom/0x002a0000.bin # empty padding
+FVS += $(BUILD)/rom/0x002c0000.fv # FIT table
+FVS += $(BUILD)/rom/0x002d0000.bin # VGA BIOS region
+FVS += $(BUILD)/rom/0x002f0000.fv # Logo and fonts
+#FVS += $(BUILD)/rom/0x00330000.fv # original DXE region
+FVS += $(BUILD)/dxe.vol # modified DXE region
+FVS += $(BUILD)/rom/0x00c00000.fv # PEI extra copy
+FVS += $(BUILD)/rom/0x00d00000.fv # PEI extra
+FVS += $(BUILD)/rom/0x00e00000.fv # PEI copy
+FVS += $(BUILD)/rom/0x00f00000.fv # PEI and reset vector
+
+#$(BUILD)/dxe.vol \
+
+# Replace the DxeCore and SmmCore with our own
+$(BUILD)/dxe.vol: \
+	$(BUILD)/DxeCore.ffs \
+	$(BUILD)/PiSmmCore.ffs \
+	./dxe/linuxboot.ffs \
+	$(BUILD)/Linux.ffs \
+	$(BUILD)/Initrd.ffs \
+	$(dxe-files) \
