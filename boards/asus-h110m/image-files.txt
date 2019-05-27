@@ -1,6 +1,6 @@
 fc510ee7-ffdc-11d4-bd41-0080c73c8881	AprioriDxe
 ab7ed12e-1d78-4635-ab87-23f00a911ec7	RomLayoutDxe
-# d6a2cb7f-6a18-4e2f-b43b-9920a733700a	DxeCore
+d6a2cb7f-6a18-4e2f-b43b-9920a733700a	DxeCore
 # 8f4b8f82-9b91-4028-86e6-f4db7d4c1dff	Bds
 53bcc14f-c24f-434c-b294-8ed2d4cc1860	DataHubDxe
 9b680fce-ad6b-4f3a-b60b-f59899003443	DevicePathDriverDxe
@@ -190,7 +190,7 @@ d912c7bc-f098-4367-92ba-e911083c7b0e	Udp6Dxe
 7a54b36f-f745-462c-b11f-16e03e52b617	AsusSpdTransfer
 27f51949-1577-4cf6-b2e2-ae9392a4ebb7	27F51949-1577-4CF6-B2E2-AE9392A4EBB7
 e6edcd6e-6f99-43d3-abfa-e3e683683ab6	E6EDCD6E-6F99-43D3-ABFA-E3E683683AB6
-# e94f54cd-81eb-47ed-aec3-856f5dc157a9	PiSmmCore
+e94f54cd-81eb-47ed-aec3-856f5dc157a9	PiSmmCore
 0c375a90-4c4c-4428-8ea0-531be8959bf7	FlashDriverSmm
 447a1b58-8f3e-4658-abaa-9e7b2280b90a	NvramSmm
 a47ee2d8-f60e-42fd-8e58-7bd65ee4c29b	CpuIo2Smm

@@ -42,9 +42,11 @@ FVS += $(BUILD)/rom/0x00f00000.fv # PEI and reset vector
 
 # Replace the DxeCore and SmmCore with our own
 $(BUILD)/dxe.vol: \
-	$(BUILD)/DxeCore.ffs \
-	$(BUILD)/PiSmmCore.ffs \
 	./dxe/linuxboot.ffs \
 	$(BUILD)/Linux.ffs \
 	$(BUILD)/Initrd.ffs \
 	$(dxe-files) \
+
+NO =\
+	#$(BUILD)/DxeCore.ffs \
+	#$(BUILD)/PiSmmCore.ffs \
