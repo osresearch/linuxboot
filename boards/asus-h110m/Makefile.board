@@ -5,11 +5,25 @@
 # extracting each of the images from it, and setting the sizes for
 # the different firmware images.
 #
+# Some issues with the AMI APTIO ROM image:
+#
+# * The SuperIO chip appears to route port 0x80 to the serial port
+# * Per-file LZMA compression doesn't work with stock edk2
+# * Firmware Volume LZMA compression doesn't work with their `PeiCore`
+# * The `DxeCore` can't be replaced due to compression issues
+# * PEI firmware hasn't been minimized
+# * BootGuard is not enabled
+#
+# Things to do:
+#
+# * Remove microcode from FIT
+# * Leave SMM unlocked
+# * Leave memory controller unlocked
+#
 
 # DXE volume is uncompressed for now
 #dxe-compress	:= 0xFF0000
 dxe-size	:= 0x8D0000
-
 
 dxe-path := $(BUILD)/rom/0x00330000
 
@@ -19,28 +33,30 @@ dxe-files := $(shell awk  \
 )
 
 
-# The Intel firmware has lots of small pieces.
-# We replace the DXE recovery image and one of the other
-# images with the LinuxBoot one.  Potentially we
-# can clean up more space.
+#
+# We replace the DXE image with our modified one. Perhaps
+# we can reclaim more space by removing the VGA BIOS, logo
+# and two extra copies of PEI volumes.
+#
 FVS := 
-FVS += $(BUILD)/rom/0x00000000.ifd # Intel Flash Descriptor
-FVS += $(BUILD)/rom/0x00010000.bin # ME section
-FVS += $(BUILD)/rom/0x00280000.fv # NVRAM
-FVS += $(BUILD)/rom/0x002a0000.bin # empty padding
-FVS += $(BUILD)/rom/0x002c0000.fv # FIT table
-FVS += $(BUILD)/rom/0x002d0000.bin # VGA BIOS region
-FVS += $(BUILD)/rom/0x002f0000.fv # Logo and fonts
-#FVS += $(BUILD)/rom/0x00330000.fv # original DXE region
-FVS += $(BUILD)/dxe.vol # modified DXE region
-FVS += $(BUILD)/rom/0x00c00000.fv # PEI extra copy
-FVS += $(BUILD)/rom/0x00d00000.fv # PEI extra
-FVS += $(BUILD)/rom/0x00e00000.fv # PEI copy
-FVS += $(BUILD)/rom/0x00f00000.fv # PEI and reset vector
+FVS += $(BUILD)/rom/0x00000000.ifd	# Intel Flash Descriptor
+FVS += $(BUILD)/rom/0x00010000.bin	# ME section
+FVS += $(BUILD)/rom/0x00280000.fv	# NVRAM
+FVS += $(BUILD)/rom/0x002a0000.bin	# empty padding
+FVS += $(BUILD)/rom/0x002c0000.fv	# FIT table
+FVS += $(BUILD)/rom/0x002d0000.bin	# VGA BIOS region
+FVS += $(BUILD)/rom/0x002f0000.fv	# Logo and fonts
+#FVS += $(BUILD)/rom/0x00330000.fv	# original DXE region
+FVS += $(BUILD)/dxe.vol			# modified DXE region
+FVS += $(BUILD)/rom/0x00c00000.fv	# PEI extra copy
+FVS += $(BUILD)/rom/0x00d00000.fv	# PEI extra
+FVS += $(BUILD)/rom/0x00e00000.fv	# PEI copy
+FVS += $(BUILD)/rom/0x00f00000.fv	# PEI and reset vector
 
-#$(BUILD)/dxe.vol \
-
-# Replace the DxeCore and SmmCore with our own
+#
+# We want to replace the DxeCore and SmmCore with our own
+# but there are issues with the supported compression formats.
+#
 $(BUILD)/dxe.vol: \
 	./dxe/linuxboot.ffs \
 	$(BUILD)/Linux.ffs \
