@@ -41,7 +41,8 @@ dxe-files := $(shell awk  \
 FVS := 
 FVS += $(BUILD)/rom/0x00000000.ifd	# Intel Flash Descriptor
 FVS += $(BUILD)/rom/0x00010000.bin	# ME section
-FVS += $(BUILD)/rom/0x00280000.fv	# NVRAM
+#FVS += $(BUILD)/rom/0x00280000.fv	# original NVRAM
+FVS += boards/$(BOARD)/nvram.fv		# updated NVRAM
 FVS += $(BUILD)/rom/0x002a0000.bin	# empty padding
 FVS += $(BUILD)/rom/0x002c0000.fv	# FIT table
 FVS += $(BUILD)/rom/0x002d0000.bin	# VGA BIOS region
@@ -64,5 +65,5 @@ $(BUILD)/dxe.vol: \
 	$(dxe-files) \
 
 NO =\
-	#$(BUILD)/DxeCore.ffs \
+	$(BUILD)/DxeCore.ffs \
 	#$(BUILD)/PiSmmCore.ffs \
